@@ -16,7 +16,7 @@ const styles = {
     },
 };
 
-const todo = [
+const todos = [
     {
         task: 'Organize Garage',
         id: 1528817077286,
@@ -33,43 +33,55 @@ class App extends React.Component {
     // you will need a place to store your state in this component.
     constructor() {
         super();
+        this.item = localStorage.getItem('todos');
+        console.log(this.item);
         this.state = {
-            todo
+            todos: this.item ? JSON.parse(this.item) : todos,
+            todo: ''
         };
     }
 
+    handleChanges = event => this.setState({[event.target.name] : event.target.value});
+
     toggleTodo = id => {
-        this.setState({
-            todo: this.state.todo.map(item => {
-                if (item.id === id) {
-                    console.log("toggle ", item.task, " - ", item.completed);
-                    return {
-                        ...item,
-                        completed: !item.completed,
-                    }
-                } else {
-                    return item;
+        const newTodoList = () => this.state.todos.map(item => {
+            if (item.id === id) {
+                console.log("toggle ", item.task, " - ", item.completed);
+                return {
+                    ...item,
+                    completed: !item.completed,
                 }
-            })
-        })
+            } else {
+                return item;
+            }
+        });
+        this.setState({
+            todos: newTodoList()
+        });
+        localStorage.setItem('todos', JSON.stringify(newTodoList()));
     };
 
-    addTodo = todo => {
+    addTodo = event => {
+        event.preventDefault();
         const newTodo = {
-            task: todo,
+            task: this.state.todo,
             id: Date.now(),
             completed: false,
         };
+        const newTodoList = [...this.state.todos, newTodo];
         this.setState({
-            todo: [...this.state.todo, newTodo]
+            todos: newTodoList
         });
+        localStorage.setItem('todos', JSON.stringify(newTodoList));
     };
 
     clearCompleted = event => {
         event.preventDefault();
+        const newTodoList = this.state.todos.filter(item => item.completed === false);
         this.setState({
-            todo: this.state.todo.filter(item => item.completed === false)
-        })
+            todos: newTodoList
+        });
+        localStorage.setItem('todos',JSON.stringify(newTodoList));
     };
     // design `App` to be the parent component of your application.
     // this component is going to take care of state, and any change handlers you need to work with your state
@@ -80,8 +92,12 @@ class App extends React.Component {
                 <Grid item xs={4}>
                     <Typography variant="h4" gutterBottom className={this.props.classes.title}>Welcome to your Todo App!</Typography>
                     <Card className={this.props.classes.card}>
-                        <TodoList todos={this.state.todo} toggleTodo={this.toggleTodo}/>
-                        <TodoForm addTodo={this.addTodo} clearCompleted={this.clearCompleted}/>
+                        <TodoList todos={this.state.todos} toggleTodo={this.toggleTodo}/>
+                        <TodoForm
+                            todo={this.state.todo}
+                            addTodo={this.addTodo}
+                            clearCompleted={this.clearCompleted}
+                            handleChanges={this.handleChanges}/>
                     </Card>
                 </Grid>
                 <Grid item xs={4}></Grid>

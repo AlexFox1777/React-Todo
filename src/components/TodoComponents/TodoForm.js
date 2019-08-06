@@ -40,55 +40,52 @@ const StyledButton = withStyles(theme => ({
 }))(Button);
 
 
-class TodoForm extends React.Component {
+function TodoForm (props){
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            task: '',
-        }
-    }
-
-    handleChanges = event => {
-        this.setState({
-            [event.target.name]: event.target.value
-        })
-    };
-
-    handleSubmit = event => {
-        event.preventDefault();
-        this.props.addTodo(this.state.task);
-    };
-
-    handleAddTodo = event => {
-        event.preventDefault();
-        this.props.addTodo(this.state.task);
-    };
-
-    render() {
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         task: '',
+    //     }
+    // }
+    //
+    // handleChanges = event => {
+    //     this.setState({
+    //         [event.target.name]: event.target.value
+    //     })
+    // };
+    //
+    // handleSubmit = event => {
+    //     event.preventDefault();
+    //     this.props.addTodo(this.state.task);
+    // };
+    //
+    // handleAddTodo = event => {
+    //     event.preventDefault();
+    //     this.props.addTodo(this.state.task);
+    // };
 
         return (
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={props.addTodo}>
                     <StyledTextField
                         variant="outlined"
                         type="text"
                         placeholder="...todo"
-                        name="task"
-                        value={this.state.item}
-                        onChange={this.handleChanges}
+                        name="todo"
+                        value={props.todo}
+                        onChange={props.handleChanges}
                     />
-                    <StyledButton variant="outlined" onClick={this.handleAddTodo}>
+                    <StyledButton variant="outlined"
+                                  onClick={props.addTodo}>
                         <Typography>Add Todo</Typography>
                     </StyledButton>
-                    <StyledButton variant="outlined" onClick={this.props.clearCompleted}>
+                    <StyledButton variant="outlined"
+                                  onClick={props.clearCompleted}>
                         <Typography>Clear Completed</Typography>
                     </StyledButton>
 
             </form>
         );
-    }
-
-
 }
 
 export default TodoForm;
